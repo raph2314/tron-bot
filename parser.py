@@ -19,6 +19,13 @@ sample = {"0,0": "wall", "0,1": "wall", "0,2": "wall", "0,3": "wall", "0,4": "wa
 "10,11": "wall", "11,0": "wall", "11,1": "wall", "11,2": "wall", "11,3": "wall", "11,4": "wall", "11,5":
 "wall", "11,6": "wall", "11,7": "wall", "11,8": "wall", "11,9": "wall", "11,10": "wall", "11,11": "wall"}
 
+DEFENSIVE = "defensive"
+AGGRESSIVE = "aggressive"
+BOXED = "boxed"
+IDLE = "idle"
+current_state = AGGRESSIVE
+empty_boxed_spaces = 0
+
 def parse_message(msg):
     msg = json.loads(msg)
 
@@ -41,6 +48,34 @@ def parse_message(msg):
             #value = msg[idx]
         #print(each)
     print(location)
+
+def finite_state_machine():
+    if current_state == AGGRESSIVE:
+        return aggressive_action()
+    elif current_state == DEFENSIVE:
+        return defensive_action()
+    elif current_state == BOXED
+        return boxed_action()
+    else
+        return idle_action()
+
+def idle_action():
+    #return move
+
+def aggressive_action():
+    #return move
+
+def defensive_action():
+    #return move
+
+def boxed_action():
+    current_width = i
+    current_length = j
+    empty_boxed_spaces = 0
+
+    #return move
+
+def find_all_empty_boxed_spaces
 
 sample = json.dumps(sample)
 parse_message(sample)
