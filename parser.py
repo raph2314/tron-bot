@@ -23,59 +23,67 @@ DEFENSIVE = "defensive"
 AGGRESSIVE = "aggressive"
 BOXED = "boxed"
 IDLE = "idle"
-current_state = AGGRESSIVE
-empty_boxed_spaces = 0
 
-def parse_message(msg):
-    msg = json.loads(msg)
+class Game:
+    def __init__():
+        self.current_state = AGGRESSIVE
+        self.empty_boxed_spaces = 0
+        self.game_state_prev = []
+        self.game_state_curr = None
+        self.game_state_future = None
 
-    # Formulate 2d array
-    i = 0
-    j = 0
-    location = []
-    for i in range(12):
-        location.append([])
-        for j in range(12):
-            idx = str(i) + ',' + str(j)
-            if (msg[idx] == 'wall') or (msg[idx] == 'trail'):
-                location[i].append(1)
-            elif msg[idx] == '':
-                location[i].append(0)
-            else:
-                location[i].append('H')
-                print(idx)
-            # print(msg[idx])
-            #value = msg[idx]
-        #print(each)
-    print(location)
+    def parse_message(msg):
+        # Save previous state for FSM algorithms' use
+        self.game_state_prev.append(self.game_state_curr)
 
-def finite_state_machine():
-    if current_state == AGGRESSIVE:
-        return aggressive_action()
-    elif current_state == DEFENSIVE:
-        return defensive_action()
-    elif current_state == BOXED
-        return boxed_action()
-    else
-        return idle_action()
+        # Make a 2d array containing all locations (0: go, 1: no go)
+        msg = json.loads(msg)
+        i = 0
+        j = 0
+        location = []
+        for i in range(12):
+            location.append([])
+            for j in range(12):
+                idx = str(i) + ',' + str(j)
+                if (msg[idx] == 'wall') or (msg[idx] == 'trail'):
+                    # Walls and trails are no go
+                    location[i].append(1)
+                elif msg[idx] == '':
+                    # Empty space is go
+                    location[i].append(0)
+                else:
+                    # Final case for snake head
+                    location[i].append('H')
 
-def idle_action():
-    #return move
+        self.game_state_curr = location
 
-def aggressive_action():
-    #return move
+    def finite_state_machine():
+        if current_state == AGGRESSIVE:
+            return aggressive_action()
+        elif current_state == DEFENSIVE:
+            return defensive_action()
+        elif current_state == BOXED
+            return boxed_action()
+        else
+            return idle_action()
 
-def defensive_action():
-    #return move
+    def idle_action():
+        #return move
 
-def boxed_action():
-    current_width = i
-    current_length = j
-    empty_boxed_spaces = 0
+    def aggressive_action():
+        #return move
 
-    #return move
+    def defensive_action():
+        #return move
 
-def find_all_empty_boxed_spaces
+    def boxed_action():
+        current_width = i
+        current_length = j
+        empty_boxed_spaces = 0
+
+        #return move
+
+    def find_all_empty_boxed_spaces
 
 sample = json.dumps(sample)
 parse_message(sample)
