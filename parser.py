@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 
 import json
-<<<<<<< HEAD
 from math import sqrt, pow, fabs
-=======
 import random
->>>>>>> 6c281ca5328d5f0d20d69369b6f3cd209d7252e6
 
 sample = {"0,0": "wall", "0,1": "wall", "0,2": "wall", "0,3": "wall", "0,4": "wall", "0,5": "wall", "0,6": "wall",
 "0,7": "wall", "0,8": "wall", "0,9": "wall", "0,10": "wall", "0,11": "wall", "1,0": "wall", "1,1": "", "1,2":
@@ -13,7 +10,7 @@ sample = {"0,0": "wall", "0,1": "wall", "0,2": "wall", "0,3": "wall", "0,4": "wa
 "wall", "2,1": "", "2,2": "", "2,3": "", "2,4": "", "2,5": "", "2,6": "", "2,7": "", "2,8": "", "2,9": "", "2,10":
 "", "2,11": "wall", "3,0": "wall", "3,1": "", "3,2": "", "3,3": "", "3,4": "", "3,5": "", "3,6": "", "3,7": "",
 "3,8": "", "3,9": "", "3,10": "", "3,11": "wall", "4,0": "wall", "4,1": "", "4,2": "", "4,3": "", "4,4": "", "4,5":
-"", "4,6": "", "4,7": "", "4,8": "", "4,9": "", "4,10": "", "4,11": "wall", "5,0": "wall", "5,1": "", "5,2": "trail",
+"", "4,6": "", "4,7": "", "4,8": "", "4,9": "", "4,10": "trail", "4,11": "wall", "5,0": "wall", "5,1": "", "5,2": "trail",
 "5,3": "trail", "5,4": "trail", "5,5": "trail", "5,6": "trail", "5,7": "trail", "5,8": "trail", "5,9": "trail", "5,10":"123456", "5,11": "wall", "6,0": "wall", "6,1": "", "6,2": "", "6,3": "", "6,4": "", "6,5": "", "6,6":
 "", "6,7": "", "6,8": "", "6,9": "", "6,10": "", "6,11": "wall", "7,0": "wall", "7,1":"123455", "7,2":
 "trail", "7,3": "trail", "7,4": "trail", "7,5": "trail", "7,6": "trail", "7,7": "trail", "7,8": "trail", "7,9": "",
@@ -35,51 +32,10 @@ move_buffer = []
 location = []
 BOXED_WITH_ENEMY = True
 
-def parse_message(msg):
-    msg = json.loads(msg)
-
-    # Formulate 2d array
-    i = 0
-    j = 0
-    location = []
-    for i in range(12):
-        location.append([])
-        for j in range(12):
-            idx = str(i) + ',' + str(j)
-            if (msg[idx] == 'wall') or (msg[idx] == 'trail'):
-                location[i].append(1)
-            elif msg[idx] == '':
-                location[i].append(0)
-            else:
-                location[i].append('H')
-                print(idx)
-            # print(msg[idx])
-            #value = msg[idx]
-        #print(each)
-    print(location)
-
-def finite_state_machine():
-    if current_state == AGGRESSIVE:
-        return aggressive_action()
-    elif current_state == DEFENSIVE:
-        return defensive_action()
-    elif current_state == BOXED:
-        return boxed_action()
-    else:
-        return idle_action()
-
-
-def aggressive_action():
-    return
-
-def defensive_action():
-    return
-
 def boxed_action():
     current_x = 3
     current_y = 8
     empty_boxed_spaces = -1
-
     
     return
 
@@ -128,7 +84,9 @@ class Game:
         self.empty_boxed_spaces = 0
         self.game_state_prev = []
         self.game_state_curr = None
+        self.prev_move = None
         self.future_move = None
+        self.boxed = False
 
         self.head_loc = None
         self.enemy_loc = None
@@ -160,18 +118,20 @@ class Game:
 
         self.game_state_curr = location
 
-    def finite_state_machine():
-        if current_state == AGGRESSIVE:
+    def finite_state_machine(self):
+        boxed = True
+        find_all_empty_boxed_spaces(self.game_state_curr[0], self.game_state_curr[1])
+        if boxed:
+            self.current_state = BOXED
+        if self.current_state == AGGRESSIVE:
             return aggressive_action()
-        elif current_state == DEFENSIVE:
+        elif self.current_state == DEFENSIVE:
             return defensive_action()
-        elif current_state == BOXED:
+        elif self.current_state == BOXED:
             return boxed_action()
         else:
             return idle_action()
 
-<<<<<<< Updated upstream
-=======
     # def idle_action():
         #return move
 
@@ -184,18 +144,37 @@ class Game:
         dist = sqrt(pow(fabs(head_x - enemy_x), 2) + pow(fabs(head_y - enemy_y), 2)) * 10
 
         next_move 
-    # def defensive_action():
-        #return move
 
-    def boxed_action():
-        current_width = i
-        current_length = j
-        empty_boxed_spaces = 0
+    def boxed_actions(self):
+        if (is_move_valid(self.prev_move)):
+            self.future_move = self.prev_move
+        elif (is_move_valid(rotate_right(self.prev_move))):
+            self.future_move = rotate_right(self.prev_move)
+        elif (is_move_valid(rotate_right(rotate_right(self.prev_move)))):
+            self.future_move = rotate_right(rotate_right(self.prev_move))
+        else:
+            self.future_move = rotate_right(rotate_right(rotate_right(self.prev_move)))
+        return 0
 
-        #return move
->>>>>>> Stashed changes
+    def rotate_right(move):
+        if (move == "RIGHT"):
+            return "DOWN"
+        elif (move == "DOWN"):
+            return "LEFT"
+        elif (move == "LEFT"):
+            return "UP"
+        else:
+            return "RIGHT"
 
-    # def find_all_empty_boxed_spaces():
+    def rotate_left(move):
+        if (move == "RIGHT"):
+            return "UP"
+        elif (move == "UP"):
+            return "LEFT"
+        elif (move == "LEFT"):
+            return "DOWN"
+        else:
+            return "RIGHT"
 
     def find_heads(self):
         for i in range(BOARD_SIZE + 1):
@@ -248,6 +227,40 @@ class Game:
             self.future_move = "LEFT"
         return
 
+    def find_all_empty_boxed_spaces(self, i, j):
+        empty_boxed_spaces+=1
+        print("EMPTY")
+        if (adjacent_to_enemy(i, j)):
+            self.boxed = True
+        if (location[i+1][j] == 0):
+            find_all_empty_boxed_spaces(i+1, j)
+        
+        if (location[i-1][j] == 0):
+            find_all_empty_boxed_spaces(i-1, j)
+        
+        if (location[i][j+1] == 0):
+            find_all_empty_boxed_spaces(i, j+1)
+        
+        if (location[i][j-1] == 0):
+            find_all_empty_boxed_spaces(i, j-1)
+
+        return    
+
+    def adjacent_to_enemy(i, j):
+        if (location[i+1][j] == 3):
+            return True
+        
+        if (location[i-1][j] == 3):
+            return True
+        
+        if (location[i][j+1] == 3):
+            return True
+        
+        if (location[i][j-1] == 3):
+            return True
+
+        return False
+
 
 
 
@@ -262,7 +275,6 @@ tron.find_heads()
 print(tron.head_loc)
 print(tron.enemy_loc)
 print(tron.game_state_curr)
-parse_message(sample)
 
 boxed_action()
 
