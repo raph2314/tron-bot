@@ -32,47 +32,6 @@ move_buffer = []
 location = []
 BOXED_WITH_ENEMY = True
 
-def boxed_action():
-    current_x = 3
-    current_y = 8
-    empty_boxed_spaces = -1
-
-    return
-
-def find_all_empty_boxed_spaces(i, j):
-    empty_boxed_spaces+=1
-    if (adjacent_to_enemy(i, j)):
-        BOXED_WITH_ENEMY = True
-    if (location[i+1][j] == 0):
-        find_all_empty_boxed_spaces(i+1, j)
-
-    if (location[i-1][j] == 0):
-        find_all_empty_boxed_spaces(i-1, j)
-
-    if (location[i][j+1] == 0):
-        find_all_empty_boxed_spaces(i, j+1)
-
-    if (location[i][j-1] == 0):
-        find_all_empty_boxed_spaces(i, j-1)
-
-    return
-
-def adjacent_to_enemy(i, j):
-    if (location[i+1][j] == 3):
-        return True
-
-    if (location[i-1][j] == 3):
-        return True
-
-    if (location[i][j+1] == 3):
-        return True
-
-    if (location[i][j-1] == 3):
-        return True
-
-    return False
-
-
 # Change this to teamID later
 TEAMID = "123456"
 ENEMYID = None
