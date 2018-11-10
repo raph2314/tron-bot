@@ -4,8 +4,11 @@ import json
 
 websocket_url = 'ws://35.183.103.104:8080/connect_dev'
 
-team_id = '<YOUR TEAM ID>'
-team_key = '<YOUR KEY>'
+team_id = '9'
+team_key = '0fbe37d761047869af1891a0cea9cfb398f9b5cc'
+
+team_id_dev = '29'
+team_key_dev = 'f633fe93bf92864d22b1cd1d53452466ff0ab7b7'
 
 sample_request = {
     'type':'REGISTRATION',
