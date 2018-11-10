@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+from math import sqrt, pow, fabs
 
 sample = {"0,0": "wall", "0,1": "wall", "0,2": "wall", "0,3": "wall", "0,4": "wall", "0,5": "wall", "0,6": "wall",
 "0,7": "wall", "0,8": "wall", "0,9": "wall", "0,10": "wall", "0,11": "wall", "1,0": "wall", "1,1": "", "1,2":
@@ -169,6 +170,30 @@ class Game:
         else:
             return idle_action()
 
+<<<<<<< Updated upstream
+=======
+    # def idle_action():
+        #return move
+
+    def aggressive_action():
+        # Computes the Euclidean distance between head and enemy and scales it by 10 to avoid floats
+        head_x = self.head_loc[0]
+        head_y = self.head_loc[1]
+        enemy_x = self.enemy_loc[0]
+        enemy_y = self.enemy_loc[1]
+        dist = sqrt(pow(fabs(head_x - enemy_x), 2) + pow(fabs(head_y - enemy_y), 2)) * 10
+
+        next_move 
+    # def defensive_action():
+        #return move
+
+    def boxed_action():
+        current_width = i
+        current_length = j
+        empty_boxed_spaces = 0
+
+        #return move
+>>>>>>> Stashed changes
 
     # def find_all_empty_boxed_spaces():
 
