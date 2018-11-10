@@ -7,7 +7,7 @@ import websockets
 import json
 
 message = {
-        "type":"MOVE",  
+        "type":"MOVE",
         "message":"DOWN",
         "authenticationKey":"<YOUR KEY>",
         "team_id":"<YOUR TEAM ID>"
@@ -21,8 +21,13 @@ async def hello():
 
         await websocket.send(loaded_msg)
         print(f"> {name}")
+        greeting = None
+        while(True):
+            greeting = await websocket.recv()
+            if greeting is not None:
+                print(greeting)
 
-        greeting = await websocket.recv()
-        
+        # Determine new state
+
 
 asyncio.get_event_loop().run_until_complete(hello())

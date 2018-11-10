@@ -27,7 +27,7 @@ BOXED = "boxed"
 IDLE = "idle"
 BOARD_SIZE = 11
 current_state = BOXED
-empty_boxed_spaces = 0
+# empty_boxed_spaces = 0
 move_buffer = []
 location = []
 BOXED_WITH_ENEMY = True
@@ -37,7 +37,7 @@ TEAMID = "123456"
 ENEMYID = None
 
 class Game:
-    def __init__(self):
+    def __init__(self, id, key):
         self.current_state = AGGRESSIVE
         self.empty_boxed_spaces = 0
         self.game_state_prev = []
@@ -48,6 +48,10 @@ class Game:
 
         self.head_loc = None
         self.enemy_loc = None
+
+
+        self.id = id
+        self.key = key
 
     def parse_message(self, msg):
         # Save previous state for FSM algorithms' use
@@ -66,7 +70,7 @@ class Game:
                 elif msg[idx] == '':
                     # Empty space is go
                     location[i].append(0)
-                elif msg[idx] == TEAMID:
+                elif msg[idx] == self.id:
                     # Case for our snake head (value=2)
                     location[i].append(2)
                 else:
@@ -75,23 +79,21 @@ class Game:
                     location[i].append(3)
 
         self.game_state_curr = location
+        self.find_heads()
 
     def finite_state_machine(self):
-        boxed = True
-        find_all_empty_boxed_spaces(self.game_state_curr[0], self.game_state_curr[1])
-        if boxed:
+        # self.boxed = True
+        # self.find_all_empty_boxed_spaces(self.head_loc[0], self.head_loc[1])
+        if self.boxed:
             self.current_state = BOXED
         if self.current_state == AGGRESSIVE:
-            return aggressive_action()
+            return self.aggressive_action()
         elif self.current_state == DEFENSIVE:
-            return defensive_action()
+            return self.defensive_action()
         elif self.current_state == BOXED:
-            return boxed_action()
+            return self.boxed_action()
         else:
-            return idle_action()
-
-    # def idle_action():
-        #return move
+            return self.idle_action()
 
     def aggressive_action(self):
         # Computes the Euclidean distance between head and enemy and scales it by 10 to avoid floats
@@ -148,14 +150,64 @@ class Game:
                     new_dist = temp_dist
                     new_move = "LEFT"
 
-
-        print(new_move)
-        return new_move
+        self.future_move = new_move
 
 
+    def defensive_action(self):
+        # Computes the Euclidean distance between head and enemy and scales it by 10 to avoid floats
+        head_x = self.head_loc[0]
+        head_y = self.head_loc[1]
+        enemy_x = self.enemy_loc[0]
+        enemy_y = self.enemy_loc[1]
+        dist_prev = sqrt(pow(fabs(head_x - enemy_x), 2) + pow(fabs(head_y - enemy_y), 2)) * 10
 
-    # def defensive_action():
-        #return move
+        # Get all possible moves and minimize euclidian distance
+        possible_moves = self.get_possible_moves()
+        new_dist = dist_prev
+        new_move = None
+        for move in possible_moves:
+            if move == "UP":
+                head_x -= 1
+                temp_dist = sqrt(pow(fabs(head_x - enemy_x), 2) + pow(fabs(head_y - enemy_y), 2)) * 10
+
+                if temp_dist == dist_prev:
+                    new_move = "UP"
+
+                if temp_dist > new_dist:
+                    new_dist = temp_dist
+                    new_move = "UP"
+
+            elif move == "DOWN":
+                head_x += 1
+                temp_dist = sqrt(pow(fabs(head_x - enemy_x), 2) + pow(fabs(head_y - enemy_y), 2)) * 10
+
+                if temp_dist == dist_prev:
+                    new_move = "DOWN"
+                if temp_dist > new_dist:
+                    new_dist = temp_dist
+                    new_move = "DOWN"
+
+            elif move == "RIGHT":
+                head_y += 1
+                temp_dist = sqrt(pow(fabs(head_x - enemy_x), 2) + pow(fabs(head_y - enemy_y), 2)) * 10
+                if temp_dist == dist_prev:
+                    new_move = "RIGHT"
+                if temp_dist > new_dist:
+                    new_dist = temp_dist
+                    new_move = "RIGHT"
+
+            elif move == "LEFT":
+                head_y -= 1
+                temp_dist = sqrt(pow(fabs(head_x - enemy_x), 2) + pow(fabs(head_y - enemy_y), 2)) * 10
+
+                if temp_dist == dist_prev:
+                    new_move = "LEFT"
+
+                if temp_dist > new_dist:
+                    new_dist = temp_dist
+                    new_move = "LEFT"
+
+        self.future_move = new_move
 
     def boxed_actions(self):
         if (is_move_valid(self.prev_move)):
@@ -235,57 +287,57 @@ class Game:
     def idle_action(self):
         random_move = random.randint(1, 5)
         if random_move == 1:
-            if not self.is_move_valid(self, "UP"):
-                idle_action(self)
+            if not self.is_move_valid("UP"):
+                self.idle_action()
                 return
             self.future_move = "UP"
         elif random_move == 2:
-            if not self.is_move_valid(self, "DOWN"):
-                idle_action(self)
+            if not self.is_move_valid("DOWN"):
+                self.idle_action()
                 return
             self.future_move = "DOWN"
         elif random_move == 3:
-            if not self.is_move_valid(self, "RIGHT"):
-                idle_action(self)
+            if not self.is_move_valid("RIGHT"):
+                self.idle_action()
                 return
             self.future_move = "RIGHT"
         elif random_move == 4:
-            if not self.is_move_valid(self, "LEFT"):
-                idle_action(self)
+            if not self.is_move_valid("LEFT"):
+                self.idle_action()
                 return
             self.future_move = "LEFT"
-        return
+        else:
+            self.future_move = "DOWN"
 
     def find_all_empty_boxed_spaces(self, i, j):
-        empty_boxed_spaces+=1
-        print("EMPTY")
-        if (adjacent_to_enemy(i, j)):
+        self.empty_boxed_spaces+=1
+        if (self.adjacent_to_enemy(i, j)):
             self.boxed = True
-        if (location[i+1][j] == 0):
-            find_all_empty_boxed_spaces(i+1, j)
+        if (self.game_state_curr[i+1][j] == 0):
+            self.find_all_empty_boxed_spaces(i+1, j)
 
-        if (location[i-1][j] == 0):
-            find_all_empty_boxed_spaces(i-1, j)
+        if (self.game_state_curr[i-1][j] == 0):
+            self.find_all_empty_boxed_spaces(i-1, j)
 
-        if (location[i][j+1] == 0):
-            find_all_empty_boxed_spaces(i, j+1)
+        if (self.game_state_curr[i][j+1] == 0):
+            self.find_all_empty_boxed_spaces(i, j+1)
 
-        if (location[i][j-1] == 0):
-            find_all_empty_boxed_spaces(i, j-1)
+        if (self.game_state_curr[i][j-1] == 0):
+            self.find_all_empty_boxed_spaces(i, j-1)
 
         return
 
-    def adjacent_to_enemy(i, j):
-        if (location[i+1][j] == 3):
+    def adjacent_to_enemy(self, i, j):
+        if (self.game_state_curr[i+1][j] == 3):
             return True
 
-        if (location[i-1][j] == 3):
+        if (self.game_state_curr[i-1][j] == 3):
             return True
 
-        if (location[i][j+1] == 3):
+        if (self.game_state_curr[i][j+1] == 3):
             return True
 
-        if (location[i][j-1] == 3):
+        if (self.game_state_curr[i][j-1] == 3):
             return True
 
         return False
@@ -293,15 +345,17 @@ class Game:
 
 
 
+if __name__ == "__main__":
+    tron = Game()
 
-tron = Game()
-
-# This should be invoked from client upon message receipt
-sample = json.dumps(sample)
-tron.parse_message(sample)
-
-tron.find_heads()
-print(tron.game_state_curr)
-tron.aggressive_action()
-
-boxed_action()
+    # This should be invoked from client upon message receipt
+    sample = json.dumps(sample)
+    # tron.parse_message(sample)
+    #
+    # tron.find_heads()
+    # print(tron.game_state_curr)
+    # tron.aggressive_action()
+    tron.parse_message(sample)
+    tron.finite_state_machine()
+    print(tron.future_move)
+    # boxed_action()

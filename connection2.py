@@ -13,18 +13,18 @@ team_key_dev = 'f633fe93bf92864d22b1cd1d53452466ff0ab7b7'
 sample_request = {
     'type':'REGISTRATION',
     'message':'',
-    'authenticationKey':team_key_dev,
-    'team_id':team_id_dev
+    'authenticationKey':team_key,
+    'team_id':team_id
     }
 
 sample_move = {
     'type':'MOVE',
     'message':'UP',
-    'authenticationKey':team_key_dev,
-    'team_id':team_id_dev
+    'authenticationKey':team_key,
+    'team_id':team_id
     }
 
-tron = Game(team_id_dev, team_key_dev)
+tron = Game(team_id, team_key)
 
 async def hello():
     async with websockets.connect(websocket_url) as websocket:
@@ -39,20 +39,21 @@ async def hello():
                 print(answer)
                 break
         answer = None
+
         while True:
             answer = await websocket.recv()
-            if True:
+            if answer is not None:
+                print(answer)
                 # sample = json.dumps(answer)
                 tron.parse_message(answer)
                 next_move = tron.finite_state_machine()
                 move = {
                         'type':'MOVE',
                         'message':next_move,
-                        'authenticationKey':team_key_dev,
-                        'team_id':team_id_dev
+                        'authenticationKey':team_key,
+                        'team_id':team_id
                 }
                 await websocket.send(json.dumps(move))
-                print(move)
                 answer = None
 
 
