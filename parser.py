@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
 import json
+<<<<<<< HEAD
 from math import sqrt, pow, fabs
+=======
+import random
+>>>>>>> 6c281ca5328d5f0d20d69369b6f3cd209d7252e6
 
 sample = {"0,0": "wall", "0,1": "wall", "0,2": "wall", "0,3": "wall", "0,4": "wall", "0,5": "wall", "0,6": "wall",
 "0,7": "wall", "0,8": "wall", "0,9": "wall", "0,10": "wall", "0,11": "wall", "1,0": "wall", "1,1": "", "1,2":
@@ -64,8 +68,6 @@ def finite_state_machine():
     else:
         return idle_action()
 
-def idle_action():
-    return 
 
 def aggressive_action():
     return
@@ -97,12 +99,10 @@ def find_all_empty_boxed_spaces(i, j):
     
     if (location[i][j-1] == 0):
         find_all_empty_boxed_spaces(i, j-1)
-    
-def is_move_valid(move):
-    if (move == "UP"):
 
+    return    
 
-def adjacent_to_enemy(i, j)
+def adjacent_to_enemy(i, j):
     if (location[i+1][j] == 3):
         return True
     
@@ -128,7 +128,7 @@ class Game:
         self.empty_boxed_spaces = 0
         self.game_state_prev = []
         self.game_state_curr = None
-        self.game_state_future = None
+        self.future_move = None
 
         self.head_loc = None
         self.enemy_loc = None
@@ -223,6 +223,30 @@ class Game:
                 return False
             return True
         return False
+
+    def idle_action(self):
+        random_move = random.randint(1, 5)
+        if random_move == 1:
+            if not self.is_move_valid(self, "UP"):
+                idle_action(self)
+                return
+            self.future_move = "UP"
+        elif random_move == 2:
+            if not self.is_move_valid(self, "DOWN"):
+                idle_action(self)
+                return
+            self.future_move = "DOWN"
+        elif random_move == 3:
+            if not self.is_move_valid(self, "RIGHT"):
+                idle_action(self)
+                return
+            self.future_move = "RIGHT"
+        elif random_move == 4:
+            if not self.is_move_valid(self, "LEFT"):
+                idle_action(self)
+                return
+            self.future_move = "LEFT"
+        return
 
 
 
