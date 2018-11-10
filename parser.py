@@ -24,6 +24,96 @@ AGGRESSIVE = "aggressive"
 BOXED = "boxed"
 IDLE = "idle"
 BOARD_SIZE = 11
+current_state = BOXED
+empty_boxed_spaces = 0
+move_buffer = []
+location = []
+BOXED_WITH_ENEMY = True
+
+def parse_message(msg):
+    msg = json.loads(msg)
+
+    # Formulate 2d array
+    i = 0
+    j = 0
+    location = []
+    for i in range(12):
+        location.append([])
+        for j in range(12):
+            idx = str(i) + ',' + str(j)
+            if (msg[idx] == 'wall') or (msg[idx] == 'trail'):
+                location[i].append(1)
+            elif msg[idx] == '':
+                location[i].append(0)
+            else:
+                location[i].append('H')
+                print(idx)
+            # print(msg[idx])
+            #value = msg[idx]
+        #print(each)
+    print(location)
+
+def finite_state_machine():
+    if current_state == AGGRESSIVE:
+        return aggressive_action()
+    elif current_state == DEFENSIVE:
+        return defensive_action()
+    elif current_state == BOXED:
+        return boxed_action()
+    else:
+        return idle_action()
+
+def idle_action():
+    return 
+
+def aggressive_action():
+    return
+
+def defensive_action():
+    return
+
+def boxed_action():
+    current_x = 3
+    current_y = 8
+    empty_boxed_spaces = -1
+    boxed_with_enemy = False
+    find_all_empty_boxed_spaces(current_x, current_y)
+    
+    return
+
+def find_all_empty_boxed_spaces(i, j):
+    empty_boxed_spaces+=1
+    print("EMPTY")
+    if (adjacent_to_enemy(i, j)):
+        BOXED_WITH_ENEMY = True
+    if (location[i+1][j] == 0):
+        find_all_empty_boxed_spaces(i+1, j)
+    
+    if (location[i-1][j] == 0):
+        find_all_empty_boxed_spaces(i-1, j)
+    
+    if (location[i][j+1] == 0):
+        find_all_empty_boxed_spaces(i, j+1)
+    
+    if (location[i][j-1] == 0):
+        find_all_empty_boxed_spaces(i, j-1)
+    
+
+def adjacent_to_enemy(i, j)
+    if (location[i+1][j] == 3):
+        return True
+    
+    if (location[i-1][j] == 3):
+        return True
+    
+    if (location[i][j+1] == 3):
+        return True
+    
+    if (location[i][j-1] == 3):
+        return True
+
+    return False
+
 
 # Change this to teamID later
 TEAMID = "123456"
@@ -118,3 +208,7 @@ tron.find_heads()
 print(tron.head_loc)
 print(tron.enemy_loc)
 print(tron.game_state_curr)
+parse_message(sample)
+
+boxed_action()
+
