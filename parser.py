@@ -22,15 +22,25 @@ sample = {"0,0": "wall", "0,1": "wall", "0,2": "wall", "0,3": "wall", "0,4": "wa
 def parse_message(msg):
     msg = json.loads(msg)
 
+    # Formulate 2d array
     i = 0
     j = 0
-
-    for i in range(11):
-        for j in range(11):
+    location = []
+    for i in range(12):
+        location.append([])
+        for j in range(12):
             idx = str(i) + ',' + str(j)
-            print(msg[idx])
+            if (msg[idx] == 'wall') or (msg[idx] == 'trail'):
+                location[i].append(1)
+            elif msg[idx] == '':
+                location[i].append(0)
+            else:
+                location[i].append('H')
+                print(idx)
+            # print(msg[idx])
             #value = msg[idx]
         #print(each)
+    print(location)
 
 sample = json.dumps(sample)
 parse_message(sample)
