@@ -23,27 +23,33 @@ DEFENSIVE = "defensive"
 AGGRESSIVE = "aggressive"
 BOXED = "boxed"
 IDLE = "idle"
+BOARD_SIZE = 11
+
+# Change this to teamID later
+TEAMID = "123456"
+ENEMYID = None
 
 class Game:
-    def __init__():
+    def __init__(self):
         self.current_state = AGGRESSIVE
         self.empty_boxed_spaces = 0
         self.game_state_prev = []
         self.game_state_curr = None
         self.game_state_future = None
 
-    def parse_message(msg):
+        self.head_loc = None
+        self.enemy_loc = None
+
+    def parse_message(self, msg):
         # Save previous state for FSM algorithms' use
         self.game_state_prev.append(self.game_state_curr)
 
         # Make a 2d array containing all locations (0: go, 1: no go)
         msg = json.loads(msg)
-        i = 0
-        j = 0
         location = []
-        for i in range(12):
+        for i in range(BOARD_SIZE + 1):
             location.append([])
-            for j in range(12):
+            for j in range(BOARD_SIZE + 1):
                 idx = str(i) + ',' + str(j)
                 if (msg[idx] == 'wall') or (msg[idx] == 'trail'):
                     # Walls and trails are no go
@@ -51,9 +57,13 @@ class Game:
                 elif msg[idx] == '':
                     # Empty space is go
                     location[i].append(0)
+                elif msg[idx] == TEAMID:
+                    # Case for our snake head (value=2)
+                    location[i].append(2)
                 else:
-                    # Final case for snake head
-                    location[i].append('H')
+                    # Case for enemy snake head (value=3)
+                    ENEMYID = msg[idx]
+                    location[i].append(3)
 
         self.game_state_curr = location
 
@@ -62,18 +72,18 @@ class Game:
             return aggressive_action()
         elif current_state == DEFENSIVE:
             return defensive_action()
-        elif current_state == BOXED
+        elif current_state == BOXED:
             return boxed_action()
-        else
+        else:
             return idle_action()
 
-    def idle_action():
+    # def idle_action():
         #return move
 
-    def aggressive_action():
-        #return move
+    # def aggressive_action():
+        # Compute distance from our head to enemy head
 
-    def defensive_action():
+    # def defensive_action():
         #return move
 
     def boxed_action():
@@ -83,7 +93,28 @@ class Game:
 
         #return move
 
-    def find_all_empty_boxed_spaces
+    # def find_all_empty_boxed_spaces():
 
+    def find_heads(self):
+        for i in range(BOARD_SIZE + 1):
+            for j in range(BOARD_SIZE + 1):
+                if (self.game_state_curr[i][j] == 2):
+                    self.head_loc = (i, j)
+                elif (self.game_state_curr[i][j] == 3):
+                    self.enemy_loc = (i, j)
+
+
+
+
+
+
+tron = Game()
+
+# This should be invoked from client upon message receipt
 sample = json.dumps(sample)
-parse_message(sample)
+tron.parse_message(sample)
+
+tron.find_heads()
+print(tron.head_loc)
+print(tron.enemy_loc)
+print(tron.game_state_curr)
