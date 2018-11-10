@@ -76,8 +76,7 @@ def boxed_action():
     current_x = 3
     current_y = 8
     empty_boxed_spaces = -1
-    boxed_with_enemy = False
-    find_all_empty_boxed_spaces(current_x, current_y)
+
     
     return
 
@@ -98,6 +97,9 @@ def find_all_empty_boxed_spaces(i, j):
     if (location[i][j-1] == 0):
         find_all_empty_boxed_spaces(i, j-1)
     
+def is_move_valid(move):
+    if (move == "UP"):
+
 
 def adjacent_to_enemy(i, j)
     if (location[i+1][j] == 3):
@@ -167,21 +169,6 @@ class Game:
         else:
             return idle_action()
 
-    # def idle_action():
-        #return move
-
-    # def aggressive_action():
-        # Compute distance from our head to enemy head
-
-    # def defensive_action():
-        #return move
-
-    def boxed_action():
-        current_width = i
-        current_length = j
-        empty_boxed_spaces = 0
-
-        #return move
 
     # def find_all_empty_boxed_spaces():
 
@@ -193,6 +180,24 @@ class Game:
                 elif (self.game_state_curr[i][j] == 3):
                     self.enemy_loc = (i, j)
 
+    def is_move_valid(self, move):
+        if (move == "UP"):
+            if (self.game_state_curr[self.head_loc[0] + 1][self.head_loc[1]] != 0):
+                return False
+            return True
+        elif (move == "DOWN"):
+            if (self.game_state_curr[self.head_loc[0] - 1][self.head_loc[1]] != 0):
+                return False
+            return True
+        elif (move == "RIGHT"):
+            if (self.game_state_curr[self.head_loc[0]][self.head_loc[1] + 1] != 0):
+                return False
+            return True
+        elif (move == "LEFT"):
+            if (self.game_state_curr[self.head_loc[0]][self.head_loc[1] - 1] != 0):
+                return False
+            return True
+        return False
 
 
 
